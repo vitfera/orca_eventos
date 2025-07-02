@@ -1,49 +1,130 @@
-version: '3.8'
-
 services:
+  # Nginx Web Server
   app:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: orcaeventos-app
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     container_name: orcaeventos-app
     restart: unless-stopped
-    working_dir: /var/www
+    working_dir: /var/www/
+    volumes:
+      - ./backend:/var/www:ro
+    depends_on:
+      - redis
+      - php-fpm
+    networks:
+      - orca-eventos
+    ports:
+      - "13000:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/nginx-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    stdin_open: true
+    tty: true
+
+  # PHP-FPM
+  php-fpm:
+    build:
+      context: .
+      dockerfile: ./docker/php-fpm/Dockerfile
+    container_name: orcaeventos-php-fpm
+    restart: unless-stopped
     volumes:
       - ./backend:/var/www
+      - laravel-storage:/var/www/storage
+    env_file:
+      - ./backend/.env
     environment:
-      - DB_HOST=db
-      - DB_DATABASE=orcaeventos
-      - DB_USERNAME=orca
-      - DB_PASSWORD=secret
-      - REDIS_HOST=redis
+      - PHP_FPM_LISTEN=9000
+      - PHP_FPM_USER=www-data
+      - PHP_FPM_GROUP=www-data
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - orca-eventos
     depends_on:
-      - db
-      - redis
-    ports:
-      - "8000:8000"
-    command: php artisan serve --host=0.0.0.0 --port=8000
+      db:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
 
+  # MariaDB Database
   db:
     image: mariadb:11.3
     container_name: orcaeventos-db
     restart: unless-stopped
-    environment:
-      MARIADB_DATABASE: orcaeventos
-      MARIADB_USER: orca
-      MARIADB_PASSWORD: secret
-      MARIADB_ROOT_PASSWORD: root
+    user: mysql
     ports:
-      - "3306:3306"
+      - "13306:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=rootsecret
+      - MARIADB_DATABASE=orcaeventos
+      - MARIADB_USER=orca
+      - MARIADB_PASSWORD=secret
     volumes:
-      - dbdata:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d:ro
+    networks:
+      - orca-eventos
+    healthcheck:
+      test: ["CMD", "mariadb", "--user=root", "--password=rootsecret", "--execute=SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  redis:
-    image: redis:alpine
-    container_name: orcaeventos-redis
+  # PHPMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: orcaeventos-phpmyadmin
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "13080:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_USER=orca
+      - PMA_PASSWORD=secret
+      - PMA_ARBITRARY=0
+      - UPLOAD_LIMIT=128M
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - orca-eventos
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7.2-alpine
+    container_name: orcaeventos-redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - orca-eventos
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  orca-eventos:
+    driver: bridge
 
 volumes:
-  dbdata:
+  laravel-storage:
+    driver: local
+  redis-data:
+    driver: local
+  mysql-data:
+    driver: local
