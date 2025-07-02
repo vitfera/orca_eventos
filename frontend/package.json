@@ -1,0 +1,40 @@
+{
+  "name": "orcaeventos-frontend",
+  "version": "0.1.0",
+  "description": "Frontend Quasar para OrçaEventos",
+  "productName": "OrçaEventos",
+  "author": "Victor Ferreira",
+  "private": true,
+  "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "lint": "eslint --ext .js,.ts,.vue ./",
+    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.4",
+    "axios": "^1.6.0",
+    "pinia": "^2.1.6",
+    "quasar": "^2.14.2",
+    "vue": "^3.4.18",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "^1.7.3",
+    "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/parser": "^6.7.0",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "prettier": "^3.0.3",
+    "typescript": "~5.2.2"
+  },
+  "engines": {
+    "node": "^20 || ^18 || ^16",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
