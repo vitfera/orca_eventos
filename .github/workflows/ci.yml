@@ -12,16 +12,16 @@ jobs:
 
     services:
       mysql:
-        image: mysql:8
+        image: mariadb:11.3
         env:
-          MYSQL_DATABASE: orcaeventos
-          MYSQL_USER: orca
-          MYSQL_PASSWORD: secret
-          MYSQL_ROOT_PASSWORD: root
+          MARIADB_DATABASE: orcaeventos
+          MARIADB_USER: orca
+          MARIADB_PASSWORD: secret
+          MARIADB_ROOT_PASSWORD: root
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -37,20 +37,20 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
-          extensions: mbstring, bcmath, pdo_mysql, gd
+          php-version: '8.4'
+          extensions: mbstring, bcmath, pdo_mysql, gd, redis
 
       - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: cd backend && composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Copy .env
-        run: cp .env.example .env
+        run: cd backend && cp .env.example .env
 
       - name: Generate key
-        run: php artisan key:generate
+        run: cd backend && php artisan key:generate
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: cd backend && php artisan migrate --force
 
       - name: Run tests
-        run: php artisan test
+        run: cd backend && php artisan test
