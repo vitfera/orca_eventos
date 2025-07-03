@@ -2,54 +2,67 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
 const routes = [
+  // Página inicial pública
   {
     path: '/',
+    component: () => import('../layouts/HomeLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('../pages/Home.vue')
+      }
+    ]
+  },
+  // Rotas protegidas (dashboard e demais)
+  {
+    path: '/app',
     component: () => import('../layouts/MainLayout.vue'),
     children: [
       { 
-        path: '', 
+        path: 'dashboard', 
         name: 'Dashboard',
         component: () => import('../pages/Dashboard.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/categories', 
+        path: 'categories', 
         name: 'Categories',
         component: () => import('../pages/Categories.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/units', 
+        path: 'units', 
         name: 'Units',
         component: () => import('../pages/Units.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/suppliers', 
+        path: 'suppliers', 
         name: 'Suppliers',
         component: () => import('../pages/Suppliers.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/items', 
+        path: 'items', 
         name: 'Items',
         component: () => import('../pages/Items.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/prices', 
+        path: 'prices', 
         name: 'Prices',
         component: () => import('../pages/Prices.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/budgets', 
+        path: 'budgets', 
         name: 'Budgets',
         component: () => import('../pages/Budgets.vue'),
         meta: { requiresAuth: true }
       },
       { 
-        path: '/budgets/:id', 
+        path: 'budgets/:id', 
         name: 'BudgetDetail',
         component: () => import('../pages/BudgetDetail.vue'),
         meta: { requiresAuth: true }
@@ -95,11 +108,12 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-  
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next({ name: 'Login' })
   } else if (to.name === 'Login' && authStore.isAuthenticated) {
     next({ name: 'Dashboard' })
+  } else if (to.name === 'Dashboard' && !authStore.isAuthenticated) {
+    next({ name: 'Home' })
   } else {
     next()
   }
