@@ -21,19 +21,20 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^1.7.3",
+    "@quasar/app-vite": "^2.2.1",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
+    "@vue/devtools": "^7.7.7",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-vue": "^9.17.0",
     "prettier": "^3.0.3",
-    "typescript": "~5.2.2"
+    "typescript": "^5.4.0"
   },
   "engines": {
-    "node": "^20 || ^18 || ^16",
+    "node": "^22 || ^20 || ^18",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

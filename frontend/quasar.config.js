@@ -8,10 +8,9 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
+import { configure } from 'quasar/wrappers';
 
-const { configure } = require('quasar/wrappers');
-
-module.exports = configure(function (/* ctx */) {
+export default configure(function (/* ctx */) {
   return {
     eslint: {
       // fix: true,
@@ -25,6 +24,7 @@ module.exports = configure(function (/* ctx */) {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#property-boot
     boot: [
       'axios',
+      'pinia',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#property-css

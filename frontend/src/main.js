@@ -37,5 +37,5 @@ myApp.use(router)
 const authStore = useAuthStore()
 authStore.initializeAuth()
 
-// Assumes you have a <div id="app"></div> in your index.html
-myApp.mount('#app')
+// Assumes you have a <div id="q-app"></div> in your index.html
+myApp.mount('#q-app')
