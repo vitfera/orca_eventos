@@ -88,7 +88,15 @@ export default configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#property-framework
     framework: {
-      config: {},
+      config: {
+        brand: {
+          primary: '#F57C3F', // laranja
+          secondary: '#1B3C5C', // azul escuro
+          accent: '#749AB5', // azul claro
+          info: '#C5D8E7', // azul pastel
+          background: '#FBFBFB' // branco
+        }
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack

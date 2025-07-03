@@ -17,7 +17,7 @@
           Simplificando Orçamentos para Eventos
         </div>
         <div class="text-subtitle1 text-center q-mb-lg">
-          O OrçaEventós é um SaaS que facilita a consulta de preços e a criação de orçamentos para o setor de eventos. Cadastre-se e tenha acesso a uma base atualizada para otimizar suas contratações.
+          O OrçaEventos é um SaaS que facilita a consulta de preços e a criação de orçamentos para o setor de eventos. Cadastre-se e tenha acesso a uma base atualizada para otimizar suas contratações.
         </div>
         <div class="row justify-center">
           <q-btn outline rounded size="lg" color="primary" label="Cadastre-se" to="/auth/register" class="q-mb-md" style="width: 180px; font-size: 1.3rem;" />
